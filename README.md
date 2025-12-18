@@ -9,8 +9,9 @@ npm run reset-project
 ## Set the Project Styling
 - Used the Nativewind (TailwindCSS)
 - Confirm NativeWind, Tailwind is installed and then restart again 
-```bash
-npm list nativewind
-npm list tailwindcss
-npx expo start -c
-```
+    ```bash
+    npm list nativewind
+    npm list tailwindcss
+    npx expo start -c
+    ```
+

@@ -1,50 +1,130 @@
-# Welcome to your Expo app 👋
+# Step by Step Project work Flow
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+## Reset your project
+This command will move the existing files in app to app-example, then create a new app directory with a new index.tsx file.
 ```bash
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Installed these packages
+```bash
+npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+```
+1. `nativewind`
+   - NativeWind brings Tailwind CSS syntax to React Native.
 
-## Learn more
+2. `tailwindcss`
+   - This is the engine/configuration behind NativeWind.
+      - Defines spacing (p-4)
+      - Defines colors (bg-blue-500)
+      - Defines typography (text-lg)
+   - why ?
+      - NativeWind depends on Tailwind rules.
+      - Without tailwindcss, NativeWind has nothing to read from.
+      - Think of it like:
+         - `tailwindcss` → rulebook
+         - `nativewind` → applies rules to React Native
+3. `react-native-reanimated`
+   - This is the official animation engine for React Native.
+      - Expo Router uses it internally
+      - Modern navigation relies on it
+      - Advanced animations need it
+4. `react-native-safe-area-context`
+   - This handles safe areas on devices with:
+      - Notches
+      - Camera cutouts
+      - Gesture bars
+      - Status bars
 
-To learn more about developing your project with Expo, look at the following resources:
+## Setup Tailwind CSS
+Run `npx tailwindcss init` to create a `tailwind.config.js` file
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Add the paths to all of your component files in your `tailwind.config.js` file.
+- Setup the tailwind: `https://www.nativewind.dev/docs`
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  // NOTE: Update this to include the paths to all files that contain Nativewind classes.
+  content: ["./App.tsx", "./components/**/*.{js,jsx,ts,tsx}"],
+  presets: [require("nativewind/preset")],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+--- 
 
-## Join the community
+Create a CSS file in `app` folder and add the Tailwind directives.
+```css
+/* global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+---
 
-Join our community of developers creating universal apps.
+Add the **Babel preset** file globally
+```js
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: [
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+      "nativewind/babel",
+    ],
+  };
+};
+```
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Create or modify your **metro.config.js**
+
+Create a `metro.config.js` file in the root of your project if you don't already have one, then add the following configuration:
+- if the file not exsist run this command `npx expo customize metro.config.js` or create manually
+- And Update:
+```js
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require('nativewind/metro');
+ 
+const config = getDefaultConfig(__dirname)
+ 
+// module.exports = withNativeWind(config, { input: './global.css' })
+module.exports = withNativeWind(config, { input: './app/global.css' })
+```
+---
+
+Import your CSS file `app/_layout.tsx`
+```tsx
+import { Stack } from "expo-router";
+import './global.css';
+
+export default function RootLayout() {
+  return <Stack />;
+}
+```
+---
+
+**TypeScript setup (optional)**
+
+The simplest method to include the types is to create a new nativewind-env.d.ts file and add a triple-slash directive referencing the types.
+```ts
+/// <reference types="nativewind/types" />
+```
+---
+
+Create a simple component to test your Nativewind setup
+```tsx
+import { Text, View } from "react-native";
+ 
+export default function App() {
+  return (
+    <View className="flex-1 items-center justify-center bg-white">
+      <Text className="text-xl font-bold text-blue-500">
+        Welcome to Nativewind!
+      </Text>
+    </View>
+  );
+}
+```
+---

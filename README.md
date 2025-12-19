@@ -1,4 +1,8 @@
-# Step by Step Project work Flow
+# <p align="center"> Movie Now </p>
+
+## Description
+A React Native movie app built with Expo using the TMDB third-party API.<br>
+Styled with NativeWind (Tailwind CSS for React Native).
 
 ## Reset your project
 This command will move the existing files in app to app-example, then create a new app directory with a new index.tsx file.
@@ -14,4 +18,4 @@ npm run reset-project
     npm list tailwindcss
     npx expo start -c
     ```
-
+---
